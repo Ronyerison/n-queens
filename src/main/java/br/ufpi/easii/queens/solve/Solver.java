@@ -19,7 +19,34 @@ public class Solver {
 		this.count = 0;
 	}
 	
-	public List<Board> solv(){
+	public List<Board> greedy(){
+		List<Board> front = new ArrayList<Board>();
+		Board actual = boardInicial.clone();
+		
+		while(!actual.isGoal()){
+			for (Board neighbor : actual.expandNeighbors()) {
+				if (!front.contains(neighbor)) {
+					front.add(neighbor);
+				}
+			}
+			greedySort(front);
+			actual = front.get(0).clone();
+			front.remove(0);
+			count++;
+		}
+		
+		if(actual.isGoal()){
+			while(actual.parent != null){
+				this.solution.add(actual);
+				actual = actual.parent;
+			}
+			solution.add(boardInicial);
+			return solution;
+		}
+		return null;
+	}
+	
+	public List<Board> aStar(){
 		List<Board> front = new ArrayList<Board>();
 		Board actual = boardInicial.clone();
 		
@@ -46,6 +73,57 @@ public class Solver {
 		return null;
 	}
 	
+	public List<Board> breadthSearch(){
+		List<Board> front = new ArrayList<Board>();
+		Board actual = boardInicial.clone();
+		
+		while(!actual.isGoal()){
+			for (Board neighbor : actual.expandNeighbors()) {
+				if (!front.contains(neighbor)) {
+					front.add(neighbor);
+				}
+			}
+			actual = front.get(0).clone();
+			front.remove(0);
+			count++;
+		}
+		
+		if(actual.isGoal()){
+			while(actual.parent != null){
+				this.solution.add(actual);
+				actual = actual.parent;
+			}
+			solution.add(boardInicial);
+			return solution;
+		}
+		return null;
+	}
+	
+	public List<Board> depthSearch(){
+		List<Board> front = new ArrayList<Board>();
+		Board actual = boardInicial.clone();
+		
+		while(!actual.isGoal()){
+			for (Board neighbor : actual.expandNeighbors()) {
+				if (!front.contains(neighbor)) {
+					front.add(neighbor);
+				}
+			}
+			actual = front.get(front.size()-1).clone();
+			front.remove(front.size()-1);
+			count++;
+		}
+		
+		if(actual.isGoal()){
+			while(actual.parent != null){
+				this.solution.add(actual);
+				actual = actual.parent;
+			}
+			solution.add(boardInicial);
+			return solution;
+		}
+		return null;
+	}
 	public void sort(List<Board> boards){
 		Collections.sort(boards, new Comparator<Board>() {
 			@Override
@@ -57,6 +135,17 @@ public class Solver {
 				}else{
 					return Integer.valueOf(o2.queen).compareTo(Integer.valueOf(o1.queen));
 				}
+			}
+		});
+	}
+	
+	public void greedySort(List<Board> boards){
+		Collections.sort(boards, new Comparator<Board>() {
+			@Override
+			public int compare(Board o1, Board o2) {
+				Integer size1 = o1.expandNeighbors().size();
+				Integer size2 = o2.expandNeighbors().size();
+				return size1.compareTo(size2); 
 			}
 		});
 	}
