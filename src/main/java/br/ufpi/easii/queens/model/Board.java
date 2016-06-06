@@ -4,14 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Queen {
+public class Board {
 	public int[][] solution;
 	public int queen;
+	public Board parent;
 
-	public Queen(int[][] board) {
+	public Board(int[][] board, Board parent, int queen) {
 		solution = board;
+		this.parent = parent;
+		this.queen = queen;
+	}
+	
+	public Board(Board clone) {
+		this.queen = clone.queen;
+		this.solution = new int[clone.solution.length][]; 
+		for (int j = 0; j < clone.solution.length; j++) {
+			this.solution[j] = clone.solution[j].clone();
+		}
+		this.parent = clone.parent;
 	}
 
+	public Board clone() {
+		return new Board(this);
+	}
+
+	public boolean isGoal(){
+		if(this.queen == solution.length){
+			return true;
+		}
+		return false;
+	}
+	
 	public void solve(int N) {
 		if(placeQueens(0, N)){
 			//print the result
@@ -51,8 +74,8 @@ public class Queen {
 
 	}
 
-	public List<Queen> expandNeighbors(int queen){
-		List<Queen> neighbors = new ArrayList<Queen>();
+	public List<Board> expandNeighbors(){
+		List<Board> neighbors = new ArrayList<Board>();
 		for (int i = 0; i < solution.length; i++) {
 			int[][] board = new int[this.solution.length][]; 
 			for (int j = 0; j < board.length; j++) {
@@ -60,45 +83,54 @@ public class Queen {
 			}
 			if (canPlace(board, queen, i)) {
 				board[queen][i] = 1;
-				neighbors.add(new Queen(board));
+				neighbors.add(new Board(board, this, this.queen+1));
 			}
 		}
 		return neighbors;
 	}
 	
-	// check if queen can be placed at matrix[row][column]
 	public boolean canPlace(int[][] matrix, int row, int column) {
-		// since we are filling one column at a time,
-		// we will check if no queen is placed in that particular row
-		for (int i = 0; i < column; i++) {
-			if (matrix[row][i] == 1) {
+		
+		//verifica coluna
+		for (int i = 0; i < row; i++) {
+			if (matrix[i][column] == 1) {
 				return false;
 			}
 		}
-		// we are filling one column at a time,so we need to check the upper and
-		// diagonal as well
-		// check upper diagonal
+		
+		//verifica diagonal principal
 		for (int i = row, j = column; i >= 0 && j >= 0; i--, j--) {
 			if (matrix[i][j] == 1) {
 				return false;
 			}
 		}
 
-		// check lower diagonal
-		for (int i = row, j = column; i < matrix.length && j >= 0; i++, j--) {
+		//verifica diagonal secundaria
+		for (int i = row, j = column; i >= 0 && j < matrix.length; i--, j++) {
 			if (matrix[i][j] == 1) {
 				return false;
 			}
 		}
-		// if we are here that means we are safe to place Queen at row,column
+		
 		return true;
 	}
 
-	public static void main(String[] args) {
-		int N = 4;
-		Queen q = new Queen(new int[4][4]);
-		q.solve(N);
-
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < solution.length; i++) {
+			for (int j = 0; j < solution[i].length; j++) {
+				sb.append(solution[i][j] + " ");
+				if(i == 0 && j == solution.length-1){
+					sb.append("queen=" + queen);
+				}
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
 	}
+	
+	
+	
 
 }
