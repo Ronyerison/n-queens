@@ -11,6 +11,7 @@ public class Solver {
 	private Board boardInicial;
 	private List<Board> solution;
 	public int count;
+	public int maxFront;
 
 	
 	public Solver(Board inicial) {
@@ -22,6 +23,8 @@ public class Solver {
 	public List<Board> greedy(){
 		List<Board> front = new ArrayList<Board>();
 		Board actual = boardInicial.clone();
+		this.count = 0;
+		this.maxFront = 0;
 		
 		while(!actual.isGoal()){
 			for (Board neighbor : actual.expandNeighbors()) {
@@ -33,6 +36,9 @@ public class Solver {
 			actual = front.get(0).clone();
 			front.remove(0);
 			count++;
+			if (front.size() > maxFront) {
+				maxFront = front.size();
+			}
 		}
 		
 		if(actual.isGoal()){
@@ -49,6 +55,8 @@ public class Solver {
 	public List<Board> aStar(){
 		List<Board> front = new ArrayList<Board>();
 		Board actual = boardInicial.clone();
+		this.count = 0;
+		this.maxFront = 0;
 		
 		while(!actual.isGoal()){
 			for (Board neighbor : actual.expandNeighbors()) {
@@ -60,6 +68,9 @@ public class Solver {
 			actual = front.get(0).clone();
 			front.remove(0);
 			count++;
+			if (front.size() > maxFront) {
+				maxFront = front.size();
+			}
 		}
 		
 		if(actual.isGoal()){
@@ -76,6 +87,8 @@ public class Solver {
 	public List<Board> breadthSearch(){
 		List<Board> front = new ArrayList<Board>();
 		Board actual = boardInicial.clone();
+		this.count = 0;
+		this.maxFront = 0;
 		
 		while(!actual.isGoal()){
 			for (Board neighbor : actual.expandNeighbors()) {
@@ -86,6 +99,9 @@ public class Solver {
 			actual = front.get(0).clone();
 			front.remove(0);
 			count++;
+			if (front.size() > maxFront) {
+				maxFront = front.size();
+			}
 		}
 		
 		if(actual.isGoal()){
@@ -102,6 +118,8 @@ public class Solver {
 	public List<Board> depthSearch(){
 		List<Board> front = new ArrayList<Board>();
 		Board actual = boardInicial.clone();
+		this.count = 0;
+		this.maxFront = 0;
 		
 		while(!actual.isGoal()){
 			for (Board neighbor : actual.expandNeighbors()) {
@@ -112,6 +130,9 @@ public class Solver {
 			actual = front.get(front.size()-1).clone();
 			front.remove(front.size()-1);
 			count++;
+			if (front.size() > maxFront) {
+				maxFront = front.size();
+			}
 		}
 		
 		if(actual.isGoal()){
